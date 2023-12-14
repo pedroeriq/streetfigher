@@ -59,7 +59,7 @@ public class Player : MonoBehaviour
     }
     void Jump()
     {
-        if (Input.GetButtonDown("Jump"))
+        if(Input.GetKey(KeyCode.W))
         {
             if(!isJumping)
             {
@@ -72,7 +72,7 @@ public class Player : MonoBehaviour
 
     private void ForwardJump()
     {
-        if(Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.Space))
+        if(Input.GetKey(KeyCode.D) && Input.GetKey(KeyCode.W))
         {
             if (!forwardJump)
             {
@@ -82,7 +82,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.A) && Input.GetKey(KeyCode.W))
         {
             if (!forwardJump)
             {
