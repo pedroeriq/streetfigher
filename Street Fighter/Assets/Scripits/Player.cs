@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     
     private bool forwardJump;
     private bool isJumping;
+    private bool isAttacking;
     private Animator anim;
     private Rigidbody2D rig;
     // Start is called before the first frame update
@@ -27,6 +28,11 @@ public class Player : MonoBehaviour
         Move();
         Jump();
         ForwardJump();
+        
+        if (isAttacking == false)
+        {
+            StartCoroutine("Atacar");
+        }
     }
 
     void Move()
@@ -92,6 +98,18 @@ public class Player : MonoBehaviour
             }
         }
     }
+    private IEnumerator Atacar()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            isAttacking = true;
+            anim.SetBool("lpunch", true);
+            yield return new WaitForSecondsRealtime(0.5f);
+            isAttacking = false;
+            anim.SetBool("lpunch", false);
+        }
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
    {
        if (collision.gameObject.layer == 3)
