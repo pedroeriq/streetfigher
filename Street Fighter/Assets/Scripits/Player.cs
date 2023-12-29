@@ -59,7 +59,7 @@ public class Player : MonoBehaviour
         // Adiciona a força lateral ao cálculo da velocidade apenas durante o forward jump
         if (applyingLateralForce)
         {
-            rig.velocity = new Vector2((movement * speed) + lateralForce, rig.velocity.y);
+            rig.velocity = new Vector2((movement * speed) + lateralForce * Mathf.Sign(rig.velocity.x), rig.velocity.y);
         }
         else
         {
@@ -111,7 +111,7 @@ public class Player : MonoBehaviour
             {
                 anim.SetInteger("transition", 3);
                 rig.AddForce(new Vector2(0, forwardJumpForce), ForceMode2D.Impulse);
-                rig.AddForce(new Vector2(lateralForce, 0), ForceMode2D.Impulse);
+                rig.AddForce(new Vector2(lateralForce * Mathf.Sign(rig.velocity.x), 0), ForceMode2D.Impulse);
                 forwardJump = true;
                 applyingLateralForce = true; // Ativa a aplicação de força lateral
             }
@@ -123,7 +123,7 @@ public class Player : MonoBehaviour
             {
                 anim.SetInteger("transition", 3);
                 rig.AddForce(new Vector2(0, forwardJumpForce), ForceMode2D.Impulse);
-                rig.AddForce(new Vector2(-lateralForce, 0), ForceMode2D.Impulse);
+                rig.AddForce(new Vector2(-lateralForce * Mathf.Sign(rig.velocity.x), 0), ForceMode2D.Impulse);
                 forwardJump = true;
                 applyingLateralForce = true; // Ativa a aplicação de força lateral
             }

@@ -10,7 +10,7 @@ public class Player2 : MonoBehaviour
 
     public GameObject hadouken;
     public Transform pontoDeTiro;
-    private Player player;
+    public Player player;
     private bool forwardJump;
     private bool isJumping;
     private bool isAttacking;

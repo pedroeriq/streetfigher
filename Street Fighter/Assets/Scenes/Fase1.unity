@@ -553,12 +553,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 182cb19c88a664d4ba60c104c2ed92b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 8
+  speed: 5
   jumpForce: 15
   forwardJumpForce: 5
   lateralForce: 3
   hadouken: {fileID: 0}
   pontoDeTiro: {fileID: 0}
+  player: {fileID: 0}
 --- !u!61 &1646301193
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -704,6 +705,7 @@ GameObject:
   - component: {fileID: 1766627446}
   - component: {fileID: 1766627445}
   - component: {fileID: 1766627450}
+  - component: {fileID: 1766627451}
   m_Layer: 0
   m_Name: Player 1
   m_TagString: Untagged
@@ -854,14 +856,39 @@ MonoBehaviour:
   m_GameObject: {fileID: 1766627444}
   m_Enabled: 1
   m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e4a3a1402f754042ba3b9427f173ead, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 0
+  jumpForce: 0
+  forwardJumpForce: 0
+  lateralForce: 0
+  hadouken: {fileID: 0}
+  pontoDeTiro: {fileID: 0}
+  player: {fileID: 0}
+  forwardJump: 0
+  isJumping: 0
+  isAttacking: 0
+  applyingLateralForce: 0
+  anim: {fileID: 0}
+  rig: {fileID: 0}
+--- !u!114 &1766627451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1766627444}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2e02353acd1e87a458008bd309c32a72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 8
-  jumpForce: 18
-  forwardJumpForce: 7
+  speed: 5
+  jumpForce: 15
+  forwardJumpForce: 5
   lateralForce: 3
-  hadouken: {fileID: 7894937267647374294, guid: 51e141d317af12f429a2c7bd7c04c62d, type: 3}
+  hadouken: {fileID: 0}
   pontoDeTiro: {fileID: 0}
   Player1: {fileID: 0}
 --- !u!1 &1821628444
