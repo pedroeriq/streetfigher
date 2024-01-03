@@ -83,7 +83,7 @@ public class Player2 : MonoBehaviour
             //transform.localScale = new Vector3(-1, 1, 1); // Inverte a escala para olhar para a esquerda
         }
 
-        if (movement == 0 && !isJumping)
+        if (movement == 0 && !isJumping && isAttacking == false)
         {
             anim.SetInteger("transition", 0);
         }
@@ -93,7 +93,7 @@ public class Player2 : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            if (!isJumping)
+            if (!isJumping && Mathf.Abs(rig.velocity.y) < 0.01f)
             {
                 anim.SetInteger("transition", 2);
                 rig.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
@@ -101,7 +101,6 @@ public class Player2 : MonoBehaviour
             }
         }
     }
-
     private void ForwardJump()
     {
         if (Input.GetKey(KeyCode.RightArrow) && Input.GetKey(KeyCode.UpArrow))
@@ -131,23 +130,22 @@ public class Player2 : MonoBehaviour
 
     private IEnumerator Atacar()
     {
-        if (Input.GetKeyDown(KeyCode.K))
+        if (Input.GetKeyDown(KeyCode.Keypad5) && !isJumping)
         {
             isAttacking = true;
-            anim.SetBool("murro", true);
-            yield return new WaitForSecondsRealtime(0.2f);
+            anim.SetInteger("transition", 8);
+            yield return new WaitForSecondsRealtime(0.35f);
             isAttacking = false;
-            anim.SetBool("murro", false);
         }
-        if (Input.GetKeyDown(KeyCode.L))
+        if (Input.GetKeyDown(KeyCode.Keypad4) && !isJumping)
         {
             isAttacking = true;
-            anim.SetBool("chute", true);
-            yield return new WaitForSecondsRealtime(0.2f);
+            anim.SetInteger("transition", 9);
+            yield return new WaitForSecondsRealtime(0.54f);
             isAttacking = false;
-            anim.SetBool("chute", false);
+            
         }
-        if (Input.GetKey(KeyCode.K) && Input.GetKey(KeyCode.L) && Input.GetKey(KeyCode.P))
+        if (Input.GetKey(KeyCode.K) && Input.GetKey(KeyCode.L) && Input.GetKey(KeyCode.P) && !isJumping)
         {
             isAttacking = true;
             anim.SetBool("hadouken", true);
@@ -159,7 +157,7 @@ public class Player2 : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.layer == 3)
+        if (collision.gameObject.layer == 3 && Mathf.Abs(rig.velocity.y) < 0.01f)
         {
             isJumping = false;
             forwardJump = false;
