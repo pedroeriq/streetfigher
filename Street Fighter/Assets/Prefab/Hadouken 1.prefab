@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7894937267647374295}
   - component: {fileID: 8997811268457056064}
   m_Layer: 0
-  m_Name: Hadouken
+  m_Name: Hadouken 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

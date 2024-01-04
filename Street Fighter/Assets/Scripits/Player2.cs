@@ -7,6 +7,7 @@ public class Player2 : MonoBehaviour
     public float jumpForce;
     public float forwardJumpForce;
     public float lateralForce;
+    public float speedHadouken = 11;
 
     public GameObject hadouken;
     public Transform pontoDeTiro;
@@ -144,13 +145,17 @@ public class Player2 : MonoBehaviour
             yield return new WaitForSecondsRealtime(0.54f);
             isAttacking = false;
         }
-        else if (Input.GetKey(KeyCode.DownArrow) && Input.GetKey(KeyCode.LeftArrow) && Input.GetKey(KeyCode.Keypad5) && !isJumping)
+        else if (Input.GetKey(KeyCode.DownArrow) && Input.GetKey(KeyCode.Keypad6) && Input.GetKey(KeyCode.Keypad5) && !isJumping)
         {
             isAttacking = true;
             anim.SetInteger("transition", 10);
             yield return new WaitForSecondsRealtime(0.58f);
             isAttacking = false;
-            Debug.Log($"AA");
+            GameObject bullet = Instantiate(hadouken, pontoDeTiro.position, pontoDeTiro.rotation);
+            Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
+            float direction = transform.localScale.x > 0 ? 1f : -1f;
+            rb.velocity = new Vector2(speedHadouken * direction, 0); // Ajuste da velocidade com a direção do jogador
+            Destroy(bullet, 2f);
         }
     }
 

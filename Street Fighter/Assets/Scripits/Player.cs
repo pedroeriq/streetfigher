@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
     public float jumpForce;
     public float forwardJumpForce;
     public float lateralForce;
+    public float speedHadouken = 11;
 
     public GameObject hadouken;
     public Transform pontoDeTiro;
@@ -132,22 +133,37 @@ public class Player : MonoBehaviour
 
     private IEnumerator Atacar()
     {
-        if (Input.GetKeyDown(KeyCode.F) && !isJumping)
+        if (Input.GetKeyDown(KeyCode.G) && !isJumping)
         {
             isAttacking = true;
             anim.SetInteger("transition", 9);
             yield return new WaitForSecondsRealtime(0.4f);
             isAttacking = false;
-         
-            
         }
-
-        if (Input.GetKeyDown(KeyCode.G) && !isJumping)
+        if (Input.GetKeyDown(KeyCode.F) && !isJumping)
         {
             isAttacking = true;
             anim.SetInteger("transition", 8);
             yield return new WaitForSecondsRealtime(0.6f);
             isAttacking = false;
+        }
+        if (Input.GetKey(KeyCode.Y) && Input.GetKey(KeyCode.U) && Input.GetKey(KeyCode.F) && !isJumping)
+        {
+            if (Input.GetKey(KeyCode.Y) && Input.GetKey(KeyCode.U) && Input.GetKey(KeyCode.F) && !isJumping)
+            {
+                isAttacking = true;
+                anim.SetInteger("transition", 10);
+                yield return new WaitForSecondsRealtime(0.58f);
+                isAttacking = false;
+                GameObject bullet = Instantiate(hadouken, pontoDeTiro.position, pontoDeTiro.rotation);
+                Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
+
+                // Obter a direção do jogador
+                Vector3 playerDirection = transform.right * transform.localScale.x;
+
+                rb.velocity = playerDirection * speedHadouken;
+                Destroy(bullet, 2f);
+            }
         }
 
     }
