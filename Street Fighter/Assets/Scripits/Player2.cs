@@ -8,6 +8,8 @@ public class Player2 : MonoBehaviour
     public float forwardJumpForce;
     public float lateralForce;
     public float speedHadouken = 11;
+    public AudioSource Soucer;
+    public AudioClip[] Clip;
 
     public GameObject hadouken;
     public Transform pontoDeTiro;
@@ -24,6 +26,7 @@ public class Player2 : MonoBehaviour
         anim = GetComponent<Animator>();
         rig = GetComponent<Rigidbody2D>();
         player = FindObjectOfType<Player>();
+        Soucer = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -128,6 +131,7 @@ public class Player2 : MonoBehaviour
             }
         }
     }
+    
 
     private IEnumerator Atacar()
     {
@@ -135,6 +139,7 @@ public class Player2 : MonoBehaviour
         {
             isAttacking = true;
             anim.SetInteger("transition", 8);
+            Play(1);
             yield return new WaitForSecondsRealtime(0.35f);
             isAttacking = false;
         }
@@ -142,6 +147,7 @@ public class Player2 : MonoBehaviour
         {
             isAttacking = true;
             anim.SetInteger("transition", 9);
+            Play(1);
             yield return new WaitForSecondsRealtime(0.54f);
             isAttacking = false;
         }
@@ -149,14 +155,20 @@ public class Player2 : MonoBehaviour
         {
             isAttacking = true;
             anim.SetInteger("transition", 10);
+            Play(0);
             yield return new WaitForSecondsRealtime(0.58f);
             isAttacking = false;
             GameObject bullet = Instantiate(hadouken, pontoDeTiro.position, pontoDeTiro.rotation);
             Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
-            float direction = transform.localScale.x > 0 ? 1f : -1f;
-            rb.velocity = new Vector2(speedHadouken * direction, 0); // Ajuste da velocidade com a direção do jogador
+            Vector3 playerDirection = transform.right * transform.localScale.x;
+            rb.velocity = playerDirection * speedHadouken;
             Destroy(bullet, 2f);
         }
+    }
+    private void Play(int numero)
+    {
+        Soucer.clip = Clip[numero];
+        Soucer.Play();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

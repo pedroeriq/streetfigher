@@ -8,6 +8,8 @@ public class Player : MonoBehaviour
     public float forwardJumpForce;
     public float lateralForce;
     public float speedHadouken = 11;
+    public AudioSource Soucer;
+    public AudioClip[] Clip;
 
     public GameObject hadouken;
     public Transform pontoDeTiro;
@@ -16,15 +18,17 @@ public class Player : MonoBehaviour
     private bool forwardJump;
     private bool isJumping;
     private bool isAttacking;
-    private bool applyingLateralForce; // Variável para rastrear se a força lateral está sendo aplicada
+    private bool applyingLateralForce; 
     private Animator anim;
     private Rigidbody2D rig;
+    private bool canUseHadouken = true;
 
     void Start()
     {
         anim = GetComponent<Animator>();
         rig = GetComponent<Rigidbody2D>();
         Player1 = FindObjectOfType<Player2>();
+        Soucer = GetComponent<AudioSource>();
     }
 
     void Update()
@@ -57,7 +61,6 @@ public class Player : MonoBehaviour
             movement = 0;
         }
 
-        // Adiciona a força lateral ao cálculo da velocidade apenas durante o forward jump
         if (applyingLateralForce)
         {
             rig.velocity = new Vector2((movement * speed) + lateralForce * Mathf.Sign(rig.velocity.x), rig.velocity.y);
@@ -114,7 +117,7 @@ public class Player : MonoBehaviour
                 rig.AddForce(new Vector2(0, forwardJumpForce), ForceMode2D.Impulse);
                 rig.AddForce(new Vector2(lateralForce * Mathf.Sign(rig.velocity.x), 0), ForceMode2D.Impulse);
                 forwardJump = true;
-                applyingLateralForce = true; // Ativa a aplicação de força lateral
+                applyingLateralForce = true;
             }
         }
 
@@ -126,7 +129,7 @@ public class Player : MonoBehaviour
                 rig.AddForce(new Vector2(0, forwardJumpForce), ForceMode2D.Impulse);
                 rig.AddForce(new Vector2(-lateralForce * Mathf.Sign(rig.velocity.x), 0), ForceMode2D.Impulse);
                 forwardJump = true;
-                applyingLateralForce = true; // Ativa a aplicação de força lateral
+                applyingLateralForce = true;
             }
         }
     }
@@ -137,6 +140,7 @@ public class Player : MonoBehaviour
         {
             isAttacking = true;
             anim.SetInteger("transition", 9);
+            Play(1);
             yield return new WaitForSecondsRealtime(0.4f);
             isAttacking = false;
         }
@@ -144,28 +148,34 @@ public class Player : MonoBehaviour
         {
             isAttacking = true;
             anim.SetInteger("transition", 8);
+            Play(1);
             yield return new WaitForSecondsRealtime(0.6f);
             isAttacking = false;
         }
-        if (Input.GetKey(KeyCode.Y) && Input.GetKey(KeyCode.U) && Input.GetKey(KeyCode.F) && !isJumping)
+        if (Input.GetKey(KeyCode.Y) && Input.GetKey(KeyCode.U) && Input.GetKey(KeyCode.F) && isJumping == false)
         {
-            if (Input.GetKey(KeyCode.Y) && Input.GetKey(KeyCode.U) && Input.GetKey(KeyCode.F) && !isJumping)
+            if (canUseHadouken)
             {
+                canUseHadouken = false;
                 isAttacking = true;
                 anim.SetInteger("transition", 10);
+                Play(0);
                 yield return new WaitForSecondsRealtime(0.58f);
                 isAttacking = false;
                 GameObject bullet = Instantiate(hadouken, pontoDeTiro.position, pontoDeTiro.rotation);
                 Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
-
-                // Obter a direção do jogador
                 Vector3 playerDirection = transform.right * transform.localScale.x;
-
                 rb.velocity = playerDirection * speedHadouken;
                 Destroy(bullet, 2f);
+                StartCoroutine(HadoukenCooldown());
             }
         }
+    }
 
+    private void Play(int numero)
+    {
+        Soucer.clip = Clip[numero];
+        Soucer.Play();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -174,24 +184,28 @@ public class Player : MonoBehaviour
         {
             isJumping = false;
             forwardJump = false;
-            applyingLateralForce = false; // Desativa a aplicação de força lateral ao pousar
+            applyingLateralForce = false;
         }
     }
+
+    private IEnumerator HadoukenCooldown()
+    {
+        yield return new WaitForSeconds(2);
+        canUseHadouken = true;
+    }
+
     void LookAtPlayer()
     {
         if (Player1 != null)
         {
             Vector3 direction = Player1.transform.position - transform.position;
         
-            // Verifica se o inimigo está à direita ou à esquerda
             if (direction.x > 0)
             {
-                // Se o jogador estiver à direita do jogador principal
                 transform.eulerAngles = new Vector3(0, 0, 0);
             }
             else
             {
-                // Se o jogador estiver à esquerda do jogador principal
                 transform.eulerAngles = new Vector3(0, 180, 0);
             }
         }
