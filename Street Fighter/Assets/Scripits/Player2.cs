@@ -10,6 +10,9 @@ public class Player2 : MonoBehaviour
     public float speedHadouken = 11;
     public AudioSource Soucer;
     public AudioClip[] Clip;
+    
+    public int maxHealth = 100; // Vida máxima do jogador
+    public int currentHealth; // Vida atual do jogador
 
     public GameObject hadouken;
     public Transform pontoDeTiro;
@@ -28,6 +31,8 @@ public class Player2 : MonoBehaviour
         rig = GetComponent<Rigidbody2D>();
         player = FindObjectOfType<Player>();
         Soucer = GetComponent<AudioSource>();
+        
+        currentHealth = maxHealth; // Define a vida atual como a vida máxima no início do jogo
     }
 
     void Update()
@@ -41,6 +46,12 @@ public class Player2 : MonoBehaviour
             StartCoroutine("Atacar");
         }
         LookAtPlayer();
+        
+        if (currentHealth <= 0)
+        {
+            anim.SetInteger("transition", 11);
+            Destroy(gameObject,1f); // Destrói o jogador se a vida atingir zero
+        }
     }
 
     void Move()
@@ -205,5 +216,23 @@ public class Player2 : MonoBehaviour
                 transform.eulerAngles = new Vector3(0, 180, 0);
             }
         }
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("hadoukenn"))
+        {
+            TakeDamage(20);
+            Destroy(collision.gameObject);// Reduz 20 de vida ao colidir com o hadouken
+        }
+        if (collision.CompareTag("atack1"))
+        {
+            TakeDamage(10);
+        }
+    }
+
+    void TakeDamage(int damage)
+    {
+        currentHealth -= damage; // Reduz a vida atual do jogador
+        // Qualquer outra lógica que você queira adicionar ao receber dano
     }
 }

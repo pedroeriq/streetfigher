@@ -15,6 +15,9 @@ public class Player : MonoBehaviour
     public Transform pontoDeTiro;
     public Player2 Player1;
 
+    public int maxHealth = 100; // Vida máxima do jogador
+    public int currentHealth; // Vida atual do jogador
+
     private bool forwardJump;
     private bool isJumping;
     private bool isAttacking;
@@ -29,21 +32,42 @@ public class Player : MonoBehaviour
         rig = GetComponent<Rigidbody2D>();
         Player1 = FindObjectOfType<Player2>();
         Soucer = GetComponent<AudioSource>();
+
+        currentHealth = maxHealth; // Define a vida atual como a vida máxima no início do jogo
     }
 
     void Update()
     {
-        Move();
-        Jump();
-        ForwardJump();
-
-        if (isAttacking == false)
+        void Update()
         {
-            StartCoroutine("Atacar");
-        }
-        LookAtPlayer();
-    }
+            Move();
+            Jump();
+            ForwardJump();
 
+            if (isAttacking == false)
+            {
+                StartCoroutine("Atacar");
+            }
+            LookAtPlayer();
+
+            if (currentHealth <= 0)
+            {
+                anim.SetInteger("transition", 11);
+
+                // Adicionando impulso para trás antes de destruir o jogador
+                if (rig.velocity.x > 0)
+                {
+                    rig.AddForce(new Vector2(-5f, 0f), ForceMode2D.Impulse);
+                }
+                else
+                {
+                    rig.AddForce(new Vector2(5f, 0f), ForceMode2D.Impulse);
+                }
+
+                Destroy(gameObject, 1f); // Destrói o jogador após 1 segundo
+            }
+        }
+    }
     void Move()
     {
         float movement = Input.GetAxis("Horizontal");
@@ -208,5 +232,23 @@ public class Player : MonoBehaviour
                 transform.eulerAngles = new Vector3(0, 180, 0);
             }
         }
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("hadouken"))
+        {
+            TakeDamage(20);
+            Destroy(collision.gameObject);// Reduz 20 de vida ao colidir com o hadouken
+        }
+        if (collision.CompareTag("atack"))
+        {
+            TakeDamage(10);
+        }
+    }
+
+    void TakeDamage(int damage)
+    {
+        currentHealth -= damage; // Reduz a vida atual do jogador
+        // Qualquer outra lógica que você queira adicionar ao receber dano
     }
 }
