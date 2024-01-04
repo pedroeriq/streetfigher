@@ -38,36 +38,35 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        void Update()
+        Move();
+        Jump();
+        ForwardJump();
+
+        if (isAttacking == false)
         {
-            Move();
-            Jump();
-            ForwardJump();
+            StartCoroutine("Atacar");
+        }
 
-            if (isAttacking == false)
+        LookAtPlayer();
+
+        if (currentHealth <= 0)
+        {
+            anim.SetInteger("transition", 11);
+
+            // Adicionando impulso para trás antes de destruir o jogador
+            if (rig.velocity.x > 0)
             {
-                StartCoroutine("Atacar");
+                rig.AddForce(new Vector2(-5f, 0f), ForceMode2D.Impulse);
             }
-            LookAtPlayer();
-
-            if (currentHealth <= 0)
+            else
             {
-                anim.SetInteger("transition", 11);
-
-                // Adicionando impulso para trás antes de destruir o jogador
-                if (rig.velocity.x > 0)
-                {
-                    rig.AddForce(new Vector2(-5f, 0f), ForceMode2D.Impulse);
-                }
-                else
-                {
-                    rig.AddForce(new Vector2(5f, 0f), ForceMode2D.Impulse);
-                }
-
-                Destroy(gameObject, 1f); // Destrói o jogador após 1 segundo
+                rig.AddForce(new Vector2(5f, 0f), ForceMode2D.Impulse);
             }
+
+            Destroy(gameObject, 1f); // Destrói o jogador após 1 segundo
         }
     }
+
     void Move()
     {
         float movement = Input.GetAxis("Horizontal");
@@ -202,19 +201,20 @@ public class Player : MonoBehaviour
         Soucer.Play();
     }
 
+    private IEnumerator HadoukenCooldown()
+    {
+        yield return new WaitForSeconds(2);
+        canUseHadouken = true;
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.layer == 3)
+        if (collision.gameObject.layer == 3 && Mathf.Abs(rig.velocity.y) < 0.01f)
         {
             isJumping = false;
             forwardJump = false;
             applyingLateralForce = false;
         }
-    }
-    private IEnumerator HadoukenCooldown()
-    {
-        yield return new WaitForSeconds(2);
-        canUseHadouken = true;
     }
 
     void LookAtPlayer()
