@@ -187,7 +187,6 @@ public class Player : MonoBehaviour
             applyingLateralForce = false;
         }
     }
-
     private IEnumerator HadoukenCooldown()
     {
         yield return new WaitForSeconds(2);

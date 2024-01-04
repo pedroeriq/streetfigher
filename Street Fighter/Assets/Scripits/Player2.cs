@@ -16,10 +16,11 @@ public class Player2 : MonoBehaviour
     public Player player;
     private bool forwardJump;
     private bool isJumping;
-    private bool isAttacking;
-    private bool applyingLateralForce; // Variável para rastrear se a força lateral está sendo aplicada
+    public bool isAttacking;
+    private bool applyingLateralForce;
     private Animator anim;
     private Rigidbody2D rig;
+    private bool canUseHadouken = true;
 
     void Start()
     {
@@ -59,7 +60,6 @@ public class Player2 : MonoBehaviour
             movement = 0;
         }
 
-        // Adiciona a força lateral ao cálculo da velocidade apenas durante o forward jump
         if (applyingLateralForce)
         {
             rig.velocity = new Vector2((movement * speed) + lateralForce * Mathf.Sign(rig.velocity.x), rig.velocity.y);
@@ -69,14 +69,12 @@ public class Player2 : MonoBehaviour
             rig.velocity = new Vector2(movement * speed, rig.velocity.y);
         }
 
-        // Ajusta a escala para olhar na direção correta
         if (movement > 0)
         {
             if (!isJumping)
             {
                 anim.SetInteger("transition", 1);
             }
-            //transform.localScale = new Vector3(1, 1, 1); // Mantém a escala normal
         }
         else if (movement < 0)
         {
@@ -84,7 +82,6 @@ public class Player2 : MonoBehaviour
             {
                 anim.SetInteger("transition", 1);
             }
-            //transform.localScale = new Vector3(-1, 1, 1); // Inverte a escala para olhar para a esquerda
         }
 
         if (movement == 0 && !isJumping && isAttacking == false)
@@ -105,6 +102,7 @@ public class Player2 : MonoBehaviour
             }
         }
     }
+
     private void ForwardJump()
     {
         if (Input.GetKey(KeyCode.RightArrow) && Input.GetKey(KeyCode.UpArrow))
@@ -115,7 +113,7 @@ public class Player2 : MonoBehaviour
                 rig.AddForce(new Vector2(0, forwardJumpForce), ForceMode2D.Impulse);
                 rig.AddForce(new Vector2(lateralForce * Mathf.Sign(rig.velocity.x), 0), ForceMode2D.Impulse);
                 forwardJump = true;
-                applyingLateralForce = true; // Ativa a aplicação de força lateral
+                applyingLateralForce = true;
             }
         }
 
@@ -127,11 +125,10 @@ public class Player2 : MonoBehaviour
                 rig.AddForce(new Vector2(0, forwardJumpForce), ForceMode2D.Impulse);
                 rig.AddForce(new Vector2(-lateralForce * Mathf.Sign(rig.velocity.x), 0), ForceMode2D.Impulse);
                 forwardJump = true;
-                applyingLateralForce = true; // Ativa a aplicação de força lateral
+                applyingLateralForce = true;
             }
         }
     }
-    
 
     private IEnumerator Atacar()
     {
@@ -143,7 +140,7 @@ public class Player2 : MonoBehaviour
             yield return new WaitForSecondsRealtime(0.35f);
             isAttacking = false;
         }
-        else if (Input.GetKeyDown(KeyCode.Keypad4) && !isJumping)
+        if (Input.GetKeyDown(KeyCode.Keypad4) && !isJumping)
         {
             isAttacking = true;
             anim.SetInteger("transition", 9);
@@ -151,24 +148,36 @@ public class Player2 : MonoBehaviour
             yield return new WaitForSecondsRealtime(0.54f);
             isAttacking = false;
         }
-        else if (Input.GetKey(KeyCode.DownArrow) && Input.GetKey(KeyCode.Keypad6) && Input.GetKey(KeyCode.Keypad5) && !isJumping)
+        if (Input.GetKey(KeyCode.DownArrow) && Input.GetKey(KeyCode.Keypad6) && Input.GetKey(KeyCode.Keypad5) && !isJumping)
         {
-            isAttacking = true;
-            anim.SetInteger("transition", 10);
-            Play(0);
-            yield return new WaitForSecondsRealtime(0.58f);
-            isAttacking = false;
-            GameObject bullet = Instantiate(hadouken, pontoDeTiro.position, pontoDeTiro.rotation);
-            Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
-            Vector3 playerDirection = transform.right * transform.localScale.x;
-            rb.velocity = playerDirection * speedHadouken;
-            Destroy(bullet, 2f);
+            if (canUseHadouken)
+            {
+                canUseHadouken = false;
+                isAttacking = true;
+                anim.SetInteger("transition", 10);
+                Play(0);
+                yield return new WaitForSecondsRealtime(0.58f);
+                isAttacking = false;
+                GameObject bullet = Instantiate(hadouken, pontoDeTiro.position, pontoDeTiro.rotation);
+                Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
+                Vector3 playerDirection = transform.right * transform.localScale.x;
+                rb.velocity = playerDirection * speedHadouken;
+                Destroy(bullet, 2f);
+                StartCoroutine(HadoukenCooldown());
+            }
         }
     }
+
     private void Play(int numero)
     {
         Soucer.clip = Clip[numero];
         Soucer.Play();
+    }
+
+    private IEnumerator HadoukenCooldown()
+    {
+        yield return new WaitForSeconds(2);
+        canUseHadouken = true;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -177,27 +186,24 @@ public class Player2 : MonoBehaviour
         {
             isJumping = false;
             forwardJump = false;
-            applyingLateralForce = false; // Desativa a aplicação de força lateral ao pousar
+            applyingLateralForce = false;
         }
     }
+
     void LookAtPlayer()
     {
         if (player != null)
         {
             Vector3 direction = player.transform.position - transform.position;
         
-            // Verifica se o inimigo está à direita ou à esquerda
             if (direction.x > 0)
             {
-                // Se o jogador estiver à direita do jogador principal
                 transform.eulerAngles = new Vector3(0, 0, 0);
             }
             else
             {
-                // Se o jogador estiver à esquerda do jogador principal
                 transform.eulerAngles = new Vector3(0, 180, 0);
             }
         }
     }
-
 }

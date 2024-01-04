@@ -303,9 +303,9 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: b734036ae1bda7643b9118cf60b19e78, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.205
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -603,8 +603,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1352398030}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.23, y: -0.17, z: 0}
-  m_LocalScale: {x: 5.150815, y: 5.150815, z: 5.150815}
+  m_LocalPosition: {x: 1.0252, y: 0.0059, z: 0}
+  m_LocalScale: {x: 5.3371544, y: 5.3371544, z: 5.3371544}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -739,6 +739,7 @@ GameObject:
   - component: {fileID: 1646301192}
   - component: {fileID: 1646301194}
   - component: {fileID: 1646301193}
+  - component: {fileID: 1646301195}
   m_Layer: 0
   m_Name: Player 2
   m_TagString: Untagged
@@ -852,9 +853,14 @@ MonoBehaviour:
   forwardJumpForce: 5
   lateralForce: 3
   speedHadouken: 2
+  Soucer: {fileID: 0}
+  Clip:
+  - {fileID: 8300000, guid: 36dd0dbee465c6f4fbb1591f4d45237d, type: 3}
+  - {fileID: 8300000, guid: fbd05cc55baeda04aad02ac9a96d34d6, type: 3}
   hadouken: {fileID: 7894937267647374294, guid: d5be3f68e02767a43983f7ab34c0f43e, type: 3}
   pontoDeTiro: {fileID: 981619702}
   player: {fileID: 0}
+  isAttacking: 0
 --- !u!61 &1646301193
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -927,6 +933,102 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
+--- !u!82 &1646301195
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1646301188}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 0.2
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &1766627444
 GameObject:
   m_ObjectHideFlags: 0
@@ -1143,6 +1245,7 @@ MonoBehaviour:
   Soucer: {fileID: 0}
   Clip:
   - {fileID: 8300000, guid: 36dd0dbee465c6f4fbb1591f4d45237d, type: 3}
+  - {fileID: 8300000, guid: fbd05cc55baeda04aad02ac9a96d34d6, type: 3}
   hadouken: {fileID: 7894937267647374294, guid: 51e141d317af12f429a2c7bd7c04c62d, type: 3}
   pontoDeTiro: {fileID: 1524942786}
   Player1: {fileID: 0}
@@ -1158,7 +1261,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.298
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 0
   Mute: 0
