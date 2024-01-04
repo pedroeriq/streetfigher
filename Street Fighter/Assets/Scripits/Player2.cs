@@ -137,21 +137,20 @@ public class Player2 : MonoBehaviour
             yield return new WaitForSecondsRealtime(0.35f);
             isAttacking = false;
         }
-        if (Input.GetKeyDown(KeyCode.Keypad4) && !isJumping)
+        else if (Input.GetKeyDown(KeyCode.Keypad4) && !isJumping)
         {
             isAttacking = true;
             anim.SetInteger("transition", 9);
             yield return new WaitForSecondsRealtime(0.54f);
             isAttacking = false;
-            
         }
-        if (Input.GetKey(KeyCode.K) && Input.GetKey(KeyCode.L) && Input.GetKey(KeyCode.P) && !isJumping)
+        else if (Input.GetKey(KeyCode.DownArrow) && Input.GetKey(KeyCode.LeftArrow) && Input.GetKey(KeyCode.Keypad5) && !isJumping)
         {
             isAttacking = true;
-            anim.SetBool("hadouken", true);
+            anim.SetInteger("transition", 10);
             yield return new WaitForSecondsRealtime(0.58f);
             isAttacking = false;
-            anim.SetBool("hadouken", false);
+            Debug.Log($"AA");
         }
     }
 

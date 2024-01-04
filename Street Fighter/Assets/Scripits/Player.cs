@@ -84,7 +84,7 @@ public class Player : MonoBehaviour
             transform.eulerAngles = new Vector3(0, 180, 0);
         }
 
-        if (movement == 0 && !isJumping)
+        if (movement == 0 && !isJumping && isAttacking == false)
         {
             anim.SetInteger("transition", 0);
         }
@@ -132,30 +132,24 @@ public class Player : MonoBehaviour
 
     private IEnumerator Atacar()
     {
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.F) && !isJumping)
         {
             isAttacking = true;
-            anim.SetBool("lpunch", true);
-            yield return new WaitForSecondsRealtime(0.2f);
+            anim.SetInteger("transition", 9);
+            yield return new WaitForSecondsRealtime(0.4f);
             isAttacking = false;
-            anim.SetBool("lpunch", false);
+         
+            
         }
-        if (Input.GetKeyDown(KeyCode.G))
+
+        if (Input.GetKeyDown(KeyCode.G) && !isJumping)
         {
             isAttacking = true;
-            anim.SetBool("LMKick", true);
-            yield return new WaitForSecondsRealtime(0.2f);
+            anim.SetInteger("transition", 8);
+            yield return new WaitForSecondsRealtime(0.6f);
             isAttacking = false;
-            anim.SetBool("LMKick", false);
         }
-        if (Input.GetKey(KeyCode.F) && Input.GetKey(KeyCode.Y) && Input.GetKey(KeyCode.U))
-        {
-            isAttacking = true;
-            anim.SetBool("Hadouken", true);
-            yield return new WaitForSecondsRealtime(0.58f);
-            isAttacking = false;
-            anim.SetBool("Hadouken", false);
-        }
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
