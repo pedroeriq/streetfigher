@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public class Player : MonoBehaviour
     private Animator anim;
     private Rigidbody2D rig;
     private bool canUseHadouken = true;
+    private bool isDefending = false;
 
     void Start()
     {
@@ -64,8 +66,18 @@ public class Player : MonoBehaviour
         }
 
         LookAtPlayer();
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            isDefending = true;
+            anim.SetInteger("transition", 12); // Entra na animação de defesa
+        }
+        else if (Input.GetKeyUp(KeyCode.E))
+        {
+            isDefending = false;
+            anim.SetInteger("transition", 0); // Retorna à animação normal
+        }
 
-        if (currentHealth <= 0)
+        if (!isDefending && currentHealth <= 0)
         {
             Play(4);
             anim.SetInteger("transition", 11);
@@ -73,14 +85,18 @@ public class Player : MonoBehaviour
             // Checa a direção para onde o jogador está olhando
             if (transform.eulerAngles.y == 0)
             {
-                rig.AddForce(new Vector2(-5f, 0f), ForceMode2D.Impulse); // Olhando para a direita, aplicando força para a esquerda
+                rig.AddForce(new Vector2(-5f, 0f),
+                    ForceMode2D.Impulse); // Olhando para a direita, aplicando força para a esquerda
             }
             else
             {
-                rig.AddForce(new Vector2(5f, 0f), ForceMode2D.Impulse); // Olhando para a esquerda, aplicando força para a direita
+                rig.AddForce(new Vector2(5f, 0f),
+                    ForceMode2D.Impulse); // Olhando para a esquerda, aplicando força para a direita
             }
+
             Play(4);
             Destroy(gameObject, 1f);
+            SceneManager.LoadScene(0);
         }
     }
 
@@ -116,6 +132,7 @@ public class Player : MonoBehaviour
             {
                 anim.SetInteger("transition", 1);
             }
+
             transform.eulerAngles = new Vector3(0, 0, 0);
         }
 
@@ -125,10 +142,11 @@ public class Player : MonoBehaviour
             {
                 anim.SetInteger("transition", 1);
             }
+
             transform.eulerAngles = new Vector3(0, 180, 0);
         }
 
-        if (movement == 0 && !isJumping && isAttacking == false)
+        if (movement == 0 && !isJumping && !isDefending && isAttacking == false)
         {
             anim.SetInteger("transition", 0);
         }
@@ -184,6 +202,7 @@ public class Player : MonoBehaviour
             yield return new WaitForSecondsRealtime(0.4f);
             isAttacking = false;
         }
+
         if (Input.GetKeyDown(KeyCode.F) && !isJumping)
         {
             isAttacking = true;
@@ -192,6 +211,7 @@ public class Player : MonoBehaviour
             yield return new WaitForSecondsRealtime(0.6f);
             isAttacking = false;
         }
+
         if (Input.GetKey(KeyCode.Y) && Input.GetKey(KeyCode.U) && Input.GetKey(KeyCode.F) && isJumping == false)
         {
             if (canUseHadouken)
@@ -251,28 +271,38 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("hadouken"))
         {
-            TakeDamage(20);
-            Play(2);
+            if (!isDefending) // Verifica se o jogador não está defendendo
+            {
+                TakeDamage(15);
+                Play(2);
+            }
             Destroy(collision.gameObject);
         }
         if (collision.CompareTag("atack"))
         {
-            TakeDamage(10);
-            Play(2);
+            if (!isDefending) // Verifica se o jogador não está defendendo
+            {
+                TakeDamage(5);
+                Play(2);
+            }
         }
     }
 
     void TakeDamage(int damage)
     {
-        currentHealth -= damage;
-
-        if (healthSlider != null)
+        if (!isDefending) // Verifica se o jogador não está defendendo
         {
-            healthSlider.value = currentHealth;
+            currentHealth -= damage;
+
+            if (healthSlider != null)
+            {
+                healthSlider.value = currentHealth;
+            }
+
         }
     }
 }

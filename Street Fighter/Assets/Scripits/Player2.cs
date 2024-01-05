@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class Player2 : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public class Player2 : MonoBehaviour
     private Animator anim;
     private Rigidbody2D rig;
     private bool canUseHadouken = true;
+    private bool isDefending = false;
 
     void Start()
     {
@@ -64,7 +66,18 @@ public class Player2 : MonoBehaviour
         }
         LookAtPlayer();
         
-        if (currentHealth <= 0)
+        if (Input.GetKeyDown(KeyCode.Keypad8))
+        {
+            isDefending = true;
+            anim.SetInteger("transition", 12); // Entra na animação de defesa
+        }
+        else if (Input.GetKeyUp(KeyCode.Keypad8))
+        {
+            isDefending = false;
+            anim.SetInteger("transition", 0); // Retorna à animação normal
+        }
+        
+        if (!isDefending && currentHealth <= 0)
         {
             anim.SetInteger("transition", 11);
 
@@ -81,7 +94,8 @@ public class Player2 : MonoBehaviour
                 rig.AddForce(new Vector2(5f, 0f), ForceMode2D.Impulse); // Olhando para a esquerda, aplicando força para a direita
             }
 
-            Destroy(gameObject, 1f); // Destrói o jogador se a vida atingir zero
+            Destroy(gameObject, 1f);
+            SceneManager.LoadScene(0);// Destrói o jogador se a vida atingir zero
         }
     }
 
@@ -126,7 +140,7 @@ public class Player2 : MonoBehaviour
             }
         }
 
-        if (movement == 0 && !isJumping && isAttacking == false)
+        if (movement == 0 && !isJumping && !isDefending && isAttacking == false)
         {
             anim.SetInteger("transition", 0);
         }
@@ -249,29 +263,36 @@ public class Player2 : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("hadoukenn"))
         {
-            TakeDamage(20);
-            Play(2);
-            Destroy(collision.gameObject); // Reduz 20 de vida ao colidir com o hadouken
+            if (!isDefending) // Verifica se o jogador não está defendendo
+            {
+                TakeDamage(15);
+                Play(2);
+            }
+            Destroy(collision.gameObject);
         }
         if (collision.CompareTag("atack1"))
         {
-            TakeDamage(10);
-            Play(2);
+            if (!isDefending) // Verifica se o jogador não está defendendo
+            {
+                TakeDamage(5);
+                Play(2);
+            }
         }
     }
-
     void TakeDamage(int damage)
     {
-        currentHealth -= damage; // Reduz a vida atual do jogador
-
-        // Atualiza a barra de vida do Player 2
-        if (healthSlider != null)
+        if (!isDefending) // Verifica se o jogador não está defendendo
         {
-            healthSlider.value = currentHealth;
+            currentHealth -= damage;
+
+            if (healthSlider != null)
+            {
+                healthSlider.value = currentHealth;
+            }
         }
     }
 }
