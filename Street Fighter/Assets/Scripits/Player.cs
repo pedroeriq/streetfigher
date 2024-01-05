@@ -1,5 +1,6 @@
-using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
 
 public class Player : MonoBehaviour
 {
@@ -15,13 +16,15 @@ public class Player : MonoBehaviour
     public Transform pontoDeTiro;
     public Player2 Player1;
 
-    public int maxHealth = 100; // Vida máxima do jogador
-    public int currentHealth; // Vida atual do jogador
+    public int maxHealth = 100;
+    public int currentHealth;
+
+    public Slider healthSlider; // Referência para o Slider da barra de vida
 
     private bool forwardJump;
     private bool isJumping;
     private bool isAttacking;
-    private bool applyingLateralForce; 
+    private bool applyingLateralForce;
     private Animator anim;
     private Rigidbody2D rig;
     private bool canUseHadouken = true;
@@ -33,7 +36,20 @@ public class Player : MonoBehaviour
         Player1 = FindObjectOfType<Player2>();
         Soucer = GetComponent<AudioSource>();
 
-        currentHealth = maxHealth; // Define a vida atual como a vida máxima no início do jogo
+        currentHealth = maxHealth;
+
+        // Encontre e atribua automaticamente o Slider se ele não estiver atribuído
+        if (healthSlider == null)
+        {
+            healthSlider = GameObject.FindObjectOfType<Slider>();
+        }
+
+        // Define o valor máximo do Slider como a vida máxima do jogador
+        if (healthSlider != null)
+        {
+            healthSlider.maxValue = maxHealth;
+            healthSlider.value = currentHealth; // Atualiza o valor inicial do Slider
+        }
     }
 
     void Update()
@@ -53,17 +69,17 @@ public class Player : MonoBehaviour
         {
             anim.SetInteger("transition", 11);
 
-            // Adicionando impulso para trás antes de destruir o jogador
-            if (rig.velocity.x > 0)
+            // Checa a direção para onde o jogador está olhando
+            if (transform.eulerAngles.y == 0)
             {
-                rig.AddForce(new Vector2(-5f, 0f), ForceMode2D.Impulse);
+                rig.AddForce(new Vector2(-5f, 0f), ForceMode2D.Impulse); // Olhando para a direita, aplicando força para a esquerda
             }
             else
             {
-                rig.AddForce(new Vector2(5f, 0f), ForceMode2D.Impulse);
+                rig.AddForce(new Vector2(5f, 0f), ForceMode2D.Impulse); // Olhando para a esquerda, aplicando força para a direita
             }
 
-            Destroy(gameObject, 1f); // Destrói o jogador após 1 segundo
+            Destroy(gameObject, 1f);
         }
     }
 
@@ -222,7 +238,7 @@ public class Player : MonoBehaviour
         if (Player1 != null)
         {
             Vector3 direction = Player1.transform.position - transform.position;
-        
+
             if (direction.x > 0)
             {
                 transform.eulerAngles = new Vector3(0, 0, 0);
@@ -233,22 +249,45 @@ public class Player : MonoBehaviour
             }
         }
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("hadouken"))
         {
             TakeDamage(20);
-            Destroy(collision.gameObject);// Reduz 20 de vida ao colidir com o hadouken
+            Play(2);
+            Destroy(collision.gameObject);
         }
         if (collision.CompareTag("atack"))
         {
             TakeDamage(10);
+            Play(2);
         }
     }
 
     void TakeDamage(int damage)
     {
-        currentHealth -= damage; // Reduz a vida atual do jogador
-        // Qualquer outra lógica que você queira adicionar ao receber dano
+        currentHealth -= damage;
+
+        if (healthSlider != null)
+        {
+            healthSlider.value = currentHealth;
+        }
+
+        if (currentHealth <= 0)
+        {
+            anim.SetInteger("transition", 11);
+
+            if (rig.velocity.x > 0)
+            {
+                rig.AddForce(new Vector2(-5f, 0f), ForceMode2D.Impulse);
+            }
+            else
+            {
+                rig.AddForce(new Vector2(5f, 0f), ForceMode2D.Impulse);
+            }
+
+            Destroy(gameObject, 1f);
+        }
     }
 }

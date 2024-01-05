@@ -1,5 +1,6 @@
-using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
+using System.Collections;
 
 public class Player2 : MonoBehaviour
 {
@@ -10,13 +11,16 @@ public class Player2 : MonoBehaviour
     public float speedHadouken = 11;
     public AudioSource Soucer;
     public AudioClip[] Clip;
-    
+
     public int maxHealth = 100; // Vida máxima do jogador
     public int currentHealth; // Vida atual do jogador
 
     public GameObject hadouken;
     public Transform pontoDeTiro;
     public Player player;
+
+    public Slider healthSlider; // Slider para a barra de vida do Player 2
+
     private bool forwardJump;
     private bool isJumping;
     public bool isAttacking;
@@ -31,8 +35,21 @@ public class Player2 : MonoBehaviour
         rig = GetComponent<Rigidbody2D>();
         player = FindObjectOfType<Player>();
         Soucer = GetComponent<AudioSource>();
-        
+
         currentHealth = maxHealth; // Define a vida atual como a vida máxima no início do jogo
+
+        // Encontra e atribui automaticamente o Slider se ele não estiver atribuído
+        if (healthSlider == null)
+        {
+            healthSlider = GameObject.FindObjectOfType<Slider>();
+        }
+
+        // Define o valor máximo do Slider como a vida máxima do jogador
+        if (healthSlider != null)
+        {
+            healthSlider.maxValue = maxHealth;
+            healthSlider.value = currentHealth; // Atualiza o valor inicial do Slider
+        }
     }
 
     void Update()
@@ -46,11 +63,22 @@ public class Player2 : MonoBehaviour
             StartCoroutine("Atacar");
         }
         LookAtPlayer();
-        
+
         if (currentHealth <= 0)
         {
             anim.SetInteger("transition", 11);
-            Destroy(gameObject,1f); // Destrói o jogador se a vida atingir zero
+
+            // Checa a direção para onde o jogador está olhando
+            if (transform.eulerAngles.y == 0)
+            {
+                rig.AddForce(new Vector2(-5f, 0f), ForceMode2D.Impulse); // Aplica uma força fraca para a esquerda se estiver olhando para a direita
+            }
+            else
+            {
+                rig.AddForce(new Vector2(5f, 0f), ForceMode2D.Impulse); // Aplica uma força fraca para a direita se estiver olhando para a esquerda
+            }
+
+            Destroy(gameObject, 1f); // Destrói o jogador se a vida atingir zero
         }
     }
 
@@ -206,7 +234,7 @@ public class Player2 : MonoBehaviour
         if (player != null)
         {
             Vector3 direction = player.transform.position - transform.position;
-        
+
             if (direction.x > 0)
             {
                 transform.eulerAngles = new Vector3(0, 0, 0);
@@ -217,22 +245,38 @@ public class Player2 : MonoBehaviour
             }
         }
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("hadoukenn"))
         {
             TakeDamage(20);
-            Destroy(collision.gameObject);// Reduz 20 de vida ao colidir com o hadouken
+            Play(2);
+            Destroy(collision.gameObject); // Reduz 20 de vida ao colidir com o hadouken
         }
         if (collision.CompareTag("atack1"))
         {
             TakeDamage(10);
+            Play(2);
         }
     }
 
     void TakeDamage(int damage)
     {
         currentHealth -= damage; // Reduz a vida atual do jogador
-        // Qualquer outra lógica que você queira adicionar ao receber dano
+
+        // Atualiza a barra de vida do Player 2
+        if (healthSlider != null)
+        {
+            healthSlider.value = currentHealth;
+        }
+
+        // Lógica adicional ao receber dano
+
+        if (currentHealth <= 0)
+        {
+            anim.SetInteger("transition", 11);
+            Destroy(gameObject, 1f); // Destrói o jogador se a vida atingir zero
+        }
     }
 }
