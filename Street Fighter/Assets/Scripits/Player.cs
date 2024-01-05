@@ -67,6 +67,7 @@ public class Player : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            Play(4);
             anim.SetInteger("transition", 11);
 
             // Checa a direção para onde o jogador está olhando
@@ -78,7 +79,7 @@ public class Player : MonoBehaviour
             {
                 rig.AddForce(new Vector2(5f, 0f), ForceMode2D.Impulse); // Olhando para a esquerda, aplicando força para a direita
             }
-
+            Play(4);
             Destroy(gameObject, 1f);
         }
     }
@@ -272,22 +273,6 @@ public class Player : MonoBehaviour
         if (healthSlider != null)
         {
             healthSlider.value = currentHealth;
-        }
-
-        if (currentHealth <= 0)
-        {
-            anim.SetInteger("transition", 11);
-
-            if (rig.velocity.x > 0)
-            {
-                rig.AddForce(new Vector2(-5f, 0f), ForceMode2D.Impulse);
-            }
-            else
-            {
-                rig.AddForce(new Vector2(5f, 0f), ForceMode2D.Impulse);
-            }
-
-            Destroy(gameObject, 1f);
         }
     }
 }

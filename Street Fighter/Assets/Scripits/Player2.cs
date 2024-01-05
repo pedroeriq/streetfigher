@@ -63,19 +63,22 @@ public class Player2 : MonoBehaviour
             StartCoroutine("Atacar");
         }
         LookAtPlayer();
-
+        
         if (currentHealth <= 0)
         {
             anim.SetInteger("transition", 11);
 
+            // Reproduz o som quando o jogador morre
+            Play(3);
+
             // Checa a direção para onde o jogador está olhando
             if (transform.eulerAngles.y == 0)
             {
-                rig.AddForce(new Vector2(-5f, 0f), ForceMode2D.Impulse); // Aplica uma força fraca para a esquerda se estiver olhando para a direita
+                rig.AddForce(new Vector2(-5f, 0f), ForceMode2D.Impulse); // Olhando para a direita, aplicando força para a esquerda
             }
             else
             {
-                rig.AddForce(new Vector2(5f, 0f), ForceMode2D.Impulse); // Aplica uma força fraca para a direita se estiver olhando para a esquerda
+                rig.AddForce(new Vector2(5f, 0f), ForceMode2D.Impulse); // Olhando para a esquerda, aplicando força para a direita
             }
 
             Destroy(gameObject, 1f); // Destrói o jogador se a vida atingir zero
@@ -269,14 +272,6 @@ public class Player2 : MonoBehaviour
         if (healthSlider != null)
         {
             healthSlider.value = currentHealth;
-        }
-
-        // Lógica adicional ao receber dano
-
-        if (currentHealth <= 0)
-        {
-            anim.SetInteger("transition", 11);
-            Destroy(gameObject, 1f); // Destrói o jogador se a vida atingir zero
         }
     }
 }

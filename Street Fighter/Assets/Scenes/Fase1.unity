@@ -1931,6 +1931,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 36dd0dbee465c6f4fbb1591f4d45237d, type: 3}
   - {fileID: 8300000, guid: fbd05cc55baeda04aad02ac9a96d34d6, type: 3}
   - {fileID: 8300000, guid: a36214f1687429c4bb38f4246b8b8bb7, type: 3}
+  - {fileID: 8300000, guid: 66dda36febccd2c459b6170b09d03b82, type: 3}
   maxHealth: 100
   currentHealth: 0
   hadouken: {fileID: 7894937267647374294, guid: d5be3f68e02767a43983f7ab34c0f43e, type: 3}
@@ -2506,6 +2507,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 36dd0dbee465c6f4fbb1591f4d45237d, type: 3}
   - {fileID: 8300000, guid: fbd05cc55baeda04aad02ac9a96d34d6, type: 3}
   - {fileID: 8300000, guid: a36214f1687429c4bb38f4246b8b8bb7, type: 3}
+  - {fileID: 8300000, guid: 17d3c137582a2d24b81908e3fbaa7f0a, type: 3}
+  - {fileID: 8300000, guid: 17d3c137582a2d24b81908e3fbaa7f0a, type: 3}
   hadouken: {fileID: 7894937267647374294, guid: 51e141d317af12f429a2c7bd7c04c62d, type: 3}
   pontoDeTiro: {fileID: 1524942786}
   Player1: {fileID: 0}
